@@ -65,3 +65,9 @@ During this lab you will:
 - When debugging, print tokens, scores, or intermediate choices.
 - Ask an AI assistant to help create edge case posts or unusual wording.
 - Try examples that mislead or confuse your model. Failure cases teach you the most.
+
+[x] Modify a rule based classifier and understand how handcrafted logic shapes predictions.
+[x] Build and label a small dataset and see how data choices influence both rule based and ML systems.
+[x] Identify where simple models fail, including sarcasm, slang, emojis, ambiguity, and cultural context.
+[x] Train and evaluate a tiny ML model to compare learned behavior with manual rules.
+[x] Write a model card that clearly communicates how your system works and where it breaks.
