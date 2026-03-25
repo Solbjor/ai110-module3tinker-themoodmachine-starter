@@ -1,0 +1,24 @@
+"""
+Analysis: Why does "This is wicked cool" fail?
+
+Current behavior:
+- Tokens: ['this', 'is', 'wicked', 'cool']
+- "wicked" -> not in word lists (score no change)
+- "cool" -> not in word lists (score no change)
+- Score: 0 -> neutral
+- But should be: positive
+
+Root cause:
+"Wicked" is modern slang that means "very" or "extremely" in American English.
+It's an intensifier, not a mood word itself. But when combined with positive
+adjectives like "cool", it should amplify the signal.
+
+Options to fix:
+1. Add "cool" as a positive word (simple vocab expansion)
+2. Add "wicked" as a positive word (treats it as standalone positive)
+3. Implement intensifier detection (look for modifiers before adjectives)
+
+Option 1 is quickest. Option 3 is most correct but complex.
+
+Test: Add "cool" to POSITIVE_WORDS, then retest.
+"""

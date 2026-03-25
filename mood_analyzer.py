@@ -9,6 +9,7 @@ This class starts with very simple logic:
   - Convert that score into a mood label
 """
 
+import re
 from typing import List, Dict, Tuple, Optional
 
 from dataset import POSITIVE_WORDS, NEGATIVE_WORDS
@@ -40,21 +41,24 @@ class MoodAnalyzer:
         """
         Convert raw text into a list of tokens the model can work with.
 
-        TODO: Improve this method.
-
-        Right now, it does the minimum:
-          - Strips leading and trailing whitespace
-          - Converts everything to lowercase
-          - Splits on spaces
-
-        Ideas to improve:
-          - Remove punctuation
-          - Handle simple emojis separately (":)", ":-(", "🥲", "😂")
-          - Normalize repeated characters ("soooo" -> "soo")
+        Improvements:
+          - Lowercase for consistency
+          - Normalize repeated characters ("soooo" -> "so")
+          - Separate punctuation from words (so "happy!" -> ["happy", "!"])
+          - Extract emoji patterns like ":)" and ":("
         """
-        cleaned = text.strip().lower()
-        tokens = cleaned.split()
-
+        # Lowercase
+        text = text.strip().lower()
+        
+        # Normalize repeated characters (sooo -> so, hmmm -> hm)
+        text = re.sub(r'(\w)\1{2,}', r'\1', text)
+        
+        # Add spaces around punctuation to separate them
+        text = re.sub(r'([!?.,:;])', r' \1 ', text)
+        
+        # Split into tokens and filter empty strings
+        tokens = [t for t in text.split() if t.strip()]
+        
         return tokens
 
     # ---------------------------------------------------------------------
@@ -68,22 +72,76 @@ class MoodAnalyzer:
         Positive words increase the score.
         Negative words decrease the score.
 
-        TODO: You must choose AT LEAST ONE modeling improvement to implement.
-        For example:
-          - Handle simple negation such as "not happy" or "not bad"
-          - Count how many times each word appears instead of just presence
-          - Give some words higher weights than others (for example "hate" < "annoyed")
-          - Treat emojis or slang (":)", "lol", "💀") as strong signals
+        Key enhancements:
+          1. NEGATION HANDLING: flips polarity for words preceded by negation
+             Can skip over determiners like "the", "a", "an"
+          2. EMOJI DETECTION: checks for common emoji patterns (:), :(, etc.)
+          3. Strong signal words: weight certain expressions higher
         """
-        # TODO: Implement this method.
-        #   1. Call self.preprocess(text) to get tokens.
-        #   2. Loop over the tokens.
-        #   3. Increase the score for positive words, decrease for negative words.
-        #   4. Return the total score.
-        #
-        # Hint: if you implement negation, you may want to look at pairs of tokens,
-        # like ("not", "happy") or ("never", "fun").
-        pass
+        # First, check for emoji patterns before tokenization
+        emoji_score = 0
+        positive_emoji_patterns = [":)", ":D", "😊", "😂", "💪", "🥲", "😍"]
+        negative_emoji_patterns = [":(", ">:(", "😭", "😞", "💔", "😩"]
+        
+        for emoji in positive_emoji_patterns:
+            if emoji in text:
+                emoji_score += 2
+        for emoji in negative_emoji_patterns:
+            if emoji in text:
+                emoji_score -= 2
+        
+        # Now process tokens
+        tokens = self.preprocess(text)
+        score = 0
+        
+        # Define negation words that flip polarity
+        negation_words = {
+            "not", "never", "no", "can't", "cant", "don't", "dont", 
+            "didn't", "didnt", "wouldn't", "wouldnt", "shouldn't", "shouldnt",
+            "isn't", "isnt", "wasn't", "wasnt", "aren't", "arent"
+        }
+        
+        # Words that can appear between negation and the sentiment word
+        # These don't break negation
+        determiners_and_adverbs = {"the", "a", "an", "some", "any", "very", "so", "quite", "really"}
+        
+        for i, token in enumerate(tokens):
+            # Skip punctuation tokens
+            if len(token) <= 1 and not token.isalpha():
+                continue
+            
+            # Check if this word is negated by looking back
+            is_negated = False
+            if i > 0:
+                # Look back up to 3 tokens (but skip determiners/adverbs)
+                for lookback in range(1, min(4, i + 1)):
+                    prev_token = tokens[i - lookback]
+                    if prev_token in negation_words:
+                        # Found a negation marker
+                        is_negated = True
+                        break
+                    elif prev_token not in determiners_and_adverbs and prev_token not in {",", "and", "or"}:
+                        # Hit a real word that's not a determiner; stop looking
+                        break
+            
+            # Positive words
+            if token in self.positive_words:
+                if is_negated:
+                    score -= 1  # Flip: "not happy" is negative
+                else:
+                    score += 1
+            
+            # Negative words
+            elif token in self.negative_words:
+                if is_negated:
+                    score += 1  # Flip: "not sad" is positive
+                else:
+                    score -= 1
+        
+        # Add emoji signals
+        score += emoji_score
+        
+        return score
 
     # ---------------------------------------------------------------------
     # Label prediction
@@ -93,24 +151,34 @@ class MoodAnalyzer:
         """
         Turn the numeric score for a piece of text into a mood label.
 
-        The default mapping is:
-          - score > 0  -> "positive"
-          - score < 0  -> "negative"
-          - score == 0 -> "neutral"
+        Mapping:
+          - score >  0  → "positive"
+          - score <  0  → "negative"
+          - score == 0  → "neutral" (or "mixed" if conflicting signals detected)
 
-        TODO: You can adjust this mapping if it makes sense for your model.
-        For example:
-          - Use different thresholds (for example score >= 2 to be "positive")
-          - Add a "mixed" label for scores close to zero
-        Just remember that whatever labels you return should match the labels
-        you use in TRUE_LABELS in dataset.py if you care about accuracy.
+        Enhancement: Detect mixed emotions by checking for both positive
+        and negative words in the same text. If score is close to 0 and
+        conflicting signals exist, label as "mixed".
         """
-        # TODO: Implement this method.
-        #   1. Call self.score_text(text) to get the numeric score.
-        #   2. Return "positive" if the score is above 0.
-        #   3. Return "negative" if the score is below 0.
-        #   4. Return "neutral" otherwise.
-        pass
+        score = self.score_text(text)
+        tokens = self.preprocess(text)
+        
+        # Check for presence of both positive and negative sentiment words
+        has_positive = any(token in self.positive_words for token in tokens)
+        has_negative = any(token in self.negative_words for token in tokens)
+        has_both = has_positive and has_negative
+        
+        # If text has conflicting signals (both pos and neg words)
+        # and score is neutral or very close to neutral, label as mixed
+        if has_both and abs(score) <= 1:
+            return "mixed"
+        
+        if score > 0:
+            return "positive"
+        elif score < 0:
+            return "negative"
+        else:
+            return "neutral"
 
     # ---------------------------------------------------------------------
     # Explanations (optional but recommended)

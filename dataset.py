@@ -23,6 +23,28 @@ POSITIVE_WORDS = [
     "chill",
     "relaxed",
     "amazing",
+    # Modern slang
+    "fire",
+    "lit",
+    "sick",
+    "dope",
+    "slaps",
+    "ate",
+    "slay",
+    "boss",
+    "stoked",
+    "hyped",
+    "blessed",
+    "proud",
+    # Informal expressions
+    "lol",
+    "lmao",
+    # Additional positive descriptors
+    "cool",
+    "best",
+    "nice",
+    "wonderful",
+    "break",  # as in "taking a break"
 ]
 
 NEGATIVE_WORDS = [
@@ -36,6 +58,24 @@ NEGATIVE_WORDS = [
     "stressed",
     "hate",
     "boring",
+    # Modern slang
+    "trash",
+    "garbage",
+    "sucks",
+    "suck",
+    "lame",
+    "wack",
+    "exhausted",
+    "drained",
+    "nope",
+    "nah",
+    # Expressions of struggle
+    "cannot",
+    # Additional negative descriptors
+    "hard",
+    "difficult",
+    "worst",
+    "stuck",
 ]
 
 # ---------------------------------------------------------------------
@@ -50,6 +90,14 @@ SAMPLE_POSTS = [
     "This is fine",
     "So excited for the weekend",
     "I am not happy about this",
+    "No cap this project is lowkey hard but i'm getting it done :)",
+    "Exhausted but at least it's friday 😭",
+    "I hate how much i love this show",
+    "Feeling like a boss today 💪💪",
+    "Ngl i'm not sure how i feel about this lol",
+    "Literally cannot with this energy rn",
+    "Ate and left no crumbs fr fr 😂",
+    "Stuck in my own head today :/ ok maybe tomorrow will be better",
 ]
 
 # Human labels for each post above.
@@ -65,6 +113,14 @@ TRUE_LABELS = [
     "neutral",   # "This is fine"
     "positive",  # "So excited for the weekend"
     "negative",  # "I am not happy about this"
+    "mixed",     # "No cap this project is lowkey hard but i'm getting it done :)"
+    "mixed",     # "Exhausted but at least it's friday 😭"
+    "mixed",     # "I hate how much I love this show"
+    "positive",  # "Feeling like a boss today 💪💪"
+    "neutral",   # "Ngl I'm not sure how I feel about this lol"
+    "negative",  # "Literally cannot with this energy rn"
+    "positive",  # "Ate and left no crumbs fr fr 😂"
+    "mixed",     # "Stuck in my own head today :/ ok maybe tomorrow will be better"
 ]
 
 # TODO: Add 5-10 more posts and labels.
