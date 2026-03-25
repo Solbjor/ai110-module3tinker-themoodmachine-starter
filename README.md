@@ -66,8 +66,15 @@ During this lab you will:
 - Ask an AI assistant to help create edge case posts or unusual wording.
 - Try examples that mislead or confuse your model. Failure cases teach you the most.
 
+
+
 [x] Modify a rule based classifier and understand how handcrafted logic shapes predictions.
 [x] Build and label a small dataset and see how data choices influence both rule based and ML systems.
 [x] Identify where simple models fail, including sarcasm, slang, emojis, ambiguity, and cultural context.
 [x] Train and evaluate a tiny ML model to compare learned behavior with manual rules.
 [x] Write a model card that clearly communicates how your system works and where it breaks.
+
+
+# Summary 
+
+Students should understand the core concepts about how to not only work with your own ML model, but also how to tweak additions and revisions properly via AI assistance. Students will learn about things such as preprocessing and tokenizing, key concepts crucial to the operation of AI ML models. I honestly think students are more likely to struggle with section 3 discussing the rule based model due to how it loops or skips determiners depending on linguistic features. Its not just about the code logic, its about learning how to take into account all these considerations when creating a model. AI was very helpful with stress testing the system and analyzing the different results for comparison. In contrast the AI was misleading when it came to some of the logic behind the rules-based-model, and I had to pivot to re-analyzing certain sections of it. 
