@@ -98,6 +98,13 @@ SAMPLE_POSTS = [
     "Literally cannot with this energy rn",
     "Ate and left no crumbs fr fr 😂",
     "Stuck in my own head today :/ ok maybe tomorrow will be better",
+    # New examples
+    "This food tastes good",
+    "I'm so angry right now",
+    "My day was pretty bad but I learned something new",
+    "Whatever",
+    "This assignment is impossible but I'm trying my best",
+    "I'm not excited about anything lately",
 ]
 
 # Human labels for each post above.
@@ -121,6 +128,13 @@ TRUE_LABELS = [
     "negative",  # "Literally cannot with this energy rn"
     "positive",  # "Ate and left no crumbs fr fr 😂"
     "mixed",     # "Stuck in my own head today :/ ok maybe tomorrow will be better"
+    # New labels
+    "positive",  # "This food tastes good"
+    "negative",  # "I'm so angry right now"
+    "mixed",     # "My day was pretty bad but I learned something new"
+    "neutral",   # "Whatever"
+    "mixed",     # "This assignment is impossible but I'm trying my best"
+    "negative",  # "I'm not excited about anything lately"
 ]
 
 # TODO: Add 5-10 more posts and labels.
